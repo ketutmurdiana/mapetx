@@ -1,43 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Memverifikasi Akun MapetX...</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; color: #374151; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #FF7A01; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
-    <div class="loader"></div>
-    <p>Verifikasi berhasil! Mengalihkan ke aplikasi MapetX...</p>
-
-    <script>
-        function redirectToApp() {
-            // 1. Ambil semua token (#access_token=...) dari URL
+    <title>Memverifikasi MapetX...</title>    <script>
+        window.onload = function() {
+            // 1. Ambil Query (?code=...) dan Hash (#access_token=...)
+            const search = window.location.search;
             const hash = window.location.hash;
             
-            if (hash) {
-                // 2. Kirim token tersebut ke Deep Link Android
-                // Hasilnya: mapetx://auth/callback#access_token=...
-                const androidAppUrl = "mapetx://auth/callback" + hash;
-                
-                // Pindahkan user ke aplikasi
-                window.location.href = androidAppUrl;
+            // 2. Gabungkan semuanya untuk dikirim ke aplikasi
+            // Contoh: mapetx://auth/callback?code=...#access_token=...
+            const deepLink = "mapetx://auth/callback" + search + hash;
 
-                // Backup: Jika aplikasi tidak terbuka dalam 2 detik, arahkan ke landing page
-                setTimeout(() => {
-                    window.location.href = "https://mapetx.vercel.app";
-                }, 2000);
-            } else {
-                // Jika tidak ada token, kembalikan ke home
-                window.location.href = "/";
-            }
+            // 3. Coba buka aplikasi
+            window.location.href = deepLink;
+
+            // 4. Backup: Jika aplikasi tidak terbuka dalam 2.5 detik, arahkan ke web utama
+            setTimeout(function() {
+                // Jika masih di halaman ini, berarti aplikasi gagal terbuka
+                if (!document.hidden) {
+                    window.location.href = "https://mapetx.vercel.app/verify-success"; 
+                }
+            }, 2500);
         }
-
-        // Jalankan otomatis
-        window.onload = redirectToApp;
     </script>
+</head>
+<body>
+    <p>Sedang membuka aplikasi MapetX... Jika tidak terbuka, <a href="mapetx://auth/callback">Klik di sini</a></p>
 </body>
 </html>
